@@ -27,6 +27,7 @@ app
 data -> Holding .sqlite file as sample data with table creation 
 
 # Steps to run
+Clone the Repositry
 Switch to the app directory
 Install dependencies: RUN pip install -r requirments.in
 Set up the database:: RUN sqlite3 ../data/event_managment.sqlite < schemas.sql
