@@ -1,7 +1,7 @@
-from fastapi import FastAPI, responses, HTTPException
+from fastapi import FastAPI, responses, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from config.logger import Logger
-from config.dto import EventDTO, EventCreateDTO, RegisterDTO, AttendeeDTO
+from dto.dto import EventDTO, EventCreateDTO, RegisterDTO, AttendeeDTO
 from typing import List
 from service.attendees import Attendees
 from service.events import Events
@@ -34,6 +34,10 @@ async def health_check():
 
 @app.get("/events", response_model=List[EventDTO])
 async def get_events():
+    '''
+    Fetches all events.
+    Returns:
+        List[EventDTO]: A list of all events.'''
     try:
         logger.info("Fetching all events")
         events = await Events().get_events()
@@ -48,12 +52,28 @@ async def get_events():
 
 @app.post("/events", response_model=EventDTO)
 async def create_event(event: EventCreateDTO):
-    logger.info("Creating a new event")
-    # Placeholder for creating an event
-    return {"id": 1, **event.dict()}
+    '''Creates a new event.
+        Args:
+            event (EventCreateDTO): The details of the event to be created.
+    '''
+    try:
+        logger.info("Creating a new event")
+        new_event = await Events().create_event(event)
+        return EventDTO.from_orm(new_event)
+    except Exception as e:
+        logger.error(f"Error creating event: {str(e)}")
+        return responses.JSONResponse(
+            status_code=500,
+            content={"error": "An error occurred while creating the event"}
+        )
 
 @app.post("/events/{event_id}/register")
 async def register_event(event_id: int, registration: RegisterDTO):
+    '''Registers an attendee for a specific event.
+        Args:
+            event_id (int): The ID of the event to register for.
+            registration (RegisterDTO): The registration details of the attendee.
+    '''
     try:
         logger.info(f"Registering to event {event_id}")
         attendee_add = await Attendees().register(event_id, registration)
@@ -78,10 +98,16 @@ async def register_event(event_id: int, registration: RegisterDTO):
         )
     
 @app.get("/events/{event_id}/attendes", response_model=List[AttendeeDTO])
-async def get_event_attendees(event_id: int):
+async def get_event_attendees(event_id: int, limit:int = Query(10, ge=1),offset:int = Query(0, ge=0)):
+    '''Fetches attendees for a specific event with pagination.
+        Args:
+            event_id (int): The ID of the event to fetch attendees for.
+            limit (int): The maximum number of attendees to return (default is 10).
+            offset (int): The number of attendees to skip before starting to collect the result set (default is 0).
+    '''
     try:
         logger.info(f"Fetching attendees for event {event_id}")
-        result = await Attendees().get_attendees(event_id)
+        result = await Attendees().get_attendees(event_id, limit=limit, offset=offset)
         return [AttendeeDTO.from_orm(a) for a in result]
     except Exception as e:
         logger.error(f"Error fetching attendees for event {event_id}: {str(e)}")

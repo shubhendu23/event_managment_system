@@ -2,3 +2,5 @@ FastApi
 uvicorn
 SqlAlchemy
 aiosqlite
+httpx
+pytest-asyncio

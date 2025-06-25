@@ -5,21 +5,18 @@ from datetime import datetime
 
 class EventCreateDTO(BaseModel):
     name: str
-    date: str
+    start_datetime: str
+    end_datetime: Optional[str] = None
     location: str
+    max_capacity: int
     description: Optional[str] = None
+    timezone: Optional[str] = None
 
     class Config:
         from_attributes = True
 
-class EventDTO(BaseModel):
+class EventDTO(EventCreateDTO):
     id: int
-    start_datetime: str
-    end_datetime: Optional[str] = None
-    max_capacity: int
-    name: str
-    location: str
-    description: Optional[str] = None
 
     class Config:
         from_attributes = True
