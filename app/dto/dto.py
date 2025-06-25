@@ -33,6 +33,12 @@ class RegisterDTO(BaseModel):
     class Config:
         from_attributes = True
 
+    @field_validator("attendee_email")
+    def validate_email(cls, value: str) -> str:
+        if "@" not in value or "." not in value.split("@")[-1]:
+            raise ValueError("Invalid email format")
+        return value.lower()
+
 class AttendeeDTO(BaseModel):
     id: int
     name: str

@@ -97,7 +97,7 @@ async def register_event(event_id: int, registration: RegisterDTO):
             content={"error": "An unexpected error occurred while registering to the event"}
         )
     
-@app.get("/events/{event_id}/attendes", response_model=List[AttendeeDTO])
+@app.get("/events/{event_id}/attendees", response_model=List[AttendeeDTO])
 async def get_event_attendees(event_id: int, limit:int = Query(10, ge=1),offset:int = Query(0, ge=0)):
     '''Fetches attendees for a specific event with pagination.
         Args:

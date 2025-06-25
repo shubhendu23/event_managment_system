@@ -1,7 +1,7 @@
 from config.logger import Logger
 from config.db_config import DBEngine
 
-db = DBEngine(db_name="../../data/event_managment.sqlite").get_engine()
+db = DBEngine(db_name="../data/event_management.sqlite").get_engine()
 logger = Logger(name="EventManagementAPI").logger
 
 from api.routes import app

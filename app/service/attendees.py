@@ -18,10 +18,9 @@ class Attendees:
     async def register(self, event_id, attendee_data):
         """
         Registers a new attendee for a specific event.
-        
-        :param event_id: ID of the event for which the attendee is being registered.
-        :param attendee_data: Dictionary containing attendee details (name, email, contact_number).
-        :return: The newly created Attendee object.
+        Args:
+            event_id (int): The ID of the event to register the attendee for.
+            attendee_data (Attendee): An instance of Attendee containing the attendee's details.
         """
         
         async with self.local_session() as session:
@@ -37,7 +36,7 @@ class Attendees:
             unique_email = await session.execute(
                 select(func.count(Attendee.id)).where(
                     Attendee.event_id == event_id,
-                    Attendee.email == attendee_data.email
+                    Attendee.email == attendee_data.attendee_email
                 ))
             if unique_email.scalar_one() > 0:
                 raise ValueError("Email already registered for this event.")
@@ -45,8 +44,8 @@ class Attendees:
             if attendes_count >= max_capacity:
                 raise ValueError("Event is fully booked. Cannot register more attendees.")
             new_attendee = Attendee(
-                name=attendee_data.name,
-                email=attendee_data.email,
+                name=attendee_data.attendee_name,
+                email=attendee_data.attendee_email,
                 contact_number=attendee_data.contact_number,
                 event_id=event_id
             )
@@ -56,6 +55,12 @@ class Attendees:
         
 
     async def get_attendees(self, event_id, limit: int = 10, offset: int = 0):
+        '''
+        Fetches attendees for a specific event with pagination.
+        Args:
+            event_id (int): The ID of the event to fetch attendees for.
+            limit (int): The maximum number of attendees to return (default is 10).
+            offset (int): The number of attendees to skip before starting to collect the result set (default is 0).'''
         async with self.local_session() as session:
             attendees = await session.execute(
             select(Attendee).where(Attendee.event_id == event_id).limit(limit).offset(offset)
