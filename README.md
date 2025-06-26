@@ -14,7 +14,7 @@ GET Method
 There are some contraints and limitation defined such as:
     *) max_capacity should not exceed
     *) valid Email
-    *) Unique qmail oer registration for an event.
+    *) Unique email for registration for an event.
 
 # Folder Structure
 app
@@ -24,13 +24,13 @@ app
     models-> data models for sqlalchemy orm
     service -> Base logics for operation on event and attendees tables.
     test -> testcases for all apis
-data -> Holding .sqlite file as sample data with table creation 
+data -> Holding .sql file as sample data with table creation and .sqlite file as our database
 
 # Steps to run
 Clone the Repositry
 Switch to the app directory
-Install dependencies: RUN pip install -r requirments.in
-Set up the database:: RUN sqlite3 ../data/event_managment.sqlite < schemas.sql
+Install dependencies: RUN pip install -r requirements.in
+Set up the database:: RUN sqlite3 ../data/event_managment.sqlite < ../data/schema.sql
 App Run: RUN python3 uvicorn app.main:app --reload
 
 

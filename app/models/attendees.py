@@ -9,7 +9,7 @@ class Attendee(AsyncAttrs,Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
-    email = Column(String(100), nullable=False, unique=True)
+    email = Column(String(100), nullable=False)
     event_id = Column(Integer, nullable=False)
     contact_number = Column(String(15), nullable=True)
 
